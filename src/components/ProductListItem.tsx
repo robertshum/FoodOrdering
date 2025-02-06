@@ -12,7 +12,11 @@ type ProductListItemProps = {
 const ProductListItem = ({ product }: ProductListItemProps) => {
   return (
     <View style={styles.container}>
-      <Image style={styles.image} source={{ uri: product.image || defaultPizzaImage }} />
+      <Image
+        style={styles.image}
+        source={{ uri: product.image || defaultPizzaImage }}
+        resizeMode='contain'
+      />
       <Text style={styles.title}>{product.name}</Text>
       <Text style={styles.price}>${product.price.toFixed(2)}</Text>
     </View>
@@ -23,6 +27,8 @@ export default ProductListItem;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    maxWidth: '50%',
     padding: 10,
     borderRadius: 20,
     overflow: 'hidden',
@@ -31,7 +37,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     marginVertical: 10,
-    alignSelf: 'center',
+    alignSelf: 'auto',
   },
   price: {
     color: Colors.light.tint,
