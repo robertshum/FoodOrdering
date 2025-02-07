@@ -1,7 +1,8 @@
-import { StyleSheet, Image } from 'react-native';
-import { Text, View } from '@/components/Themed';
+import { StyleSheet, Image, Pressable } from 'react-native';
+import { Text } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { Product } from '../types';
+import { Link } from 'expo-router';
 
 export const defaultPizzaImage = 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
 
@@ -11,15 +12,18 @@ type ProductListItemProps = {
 
 const ProductListItem = ({ product }: ProductListItemProps) => {
   return (
-    <View style={styles.container}>
-      <Image
-        style={styles.image}
-        source={{ uri: product.image || defaultPizzaImage }}
-        resizeMode='contain'
-      />
-      <Text style={styles.title}>{product.name}</Text>
-      <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-    </View>
+    <Link href={`/menu/${product.id}`} asChild>
+      {/* Pressables very similar to view, but it has press events.  Can combine it in conjunction with <Link> tag as parent with (asChild) */}
+      <Pressable style={styles.container}>
+        <Image
+          style={styles.image}
+          source={{ uri: product.image || defaultPizzaImage }}
+          resizeMode='contain'
+        />
+        <Text style={styles.title}>{product.name}</Text>
+        <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+      </Pressable>
+    </Link>
   );
 };
 
