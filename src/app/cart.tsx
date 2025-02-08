@@ -9,8 +9,8 @@ const CartScreen = () => {
   return (
     <View>
       <Text style={{ color: 'white' }}>Cart item length: {items?.length}</Text >
-      {/* Use a light status bar on iOS to account for the black space above the modal */}
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
+      {/* Use a light status bar on iOS to account for the black space above the modal.  Super janky with Android. */}
+      {/* <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} /> */}
     </View>
   );
 };
