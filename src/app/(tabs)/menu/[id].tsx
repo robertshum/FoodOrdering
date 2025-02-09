@@ -2,7 +2,7 @@
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import products from '@assets/data/products';
 import { defaultPizzaImage } from '@/components/ProductListItem';
 import { useState } from 'react';
@@ -20,12 +20,14 @@ const ProductDetailsScreen = () => {
   const textColor = Colors[colorScheme ?? 'light'].text;
   const product = products.find((p) => p.id.toString() === id);
   const { addItem } = useCart();
+  const router = useRouter();
 
   const addToCart = () => {
     if (!product) {
       return;
     }
     addItem(product, selectedSize);
+    router.push('/cart');
   };
 
   if (!product) {
