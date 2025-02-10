@@ -12,12 +12,37 @@ export default function MenuStack() {
   return (
     <Stack>
       <Stack.Screen
+        name="index"
+        options={{
+          title: 'Menu',
+          headerRight: () => (
+            <Pressable
+              onPressIn={() => router.push("/(admin)/menu/create")}
+              style={{ padding: 10 }}
+            >
+              <FontAwesome
+                name="plus-square-o"
+                size={25}
+                color={Colors.light.tint}
+                style={{
+                  // marginRight: 10,
+                  // marginBottom: -5,
+                  // width: 35,
+                  // height: 35,
+                }}
+              />
+            </Pressable>
+          )
+        }} />
+
+
+      <Stack.Screen
         name="[id]"
         options={{
           title: 'Menu',
           headerRight: () => (
             <Pressable
-              onPressIn={() => router.push("/")}
+              onPressIn={() => router.push("/(admin)/menu/[id]")}
               style={{ padding: 10 }}
             >
               <FontAwesome
