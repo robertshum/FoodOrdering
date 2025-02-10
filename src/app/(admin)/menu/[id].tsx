@@ -9,6 +9,7 @@ import { useState } from 'react';
 import Button from '@components/Button';
 import { useCart } from '@/providers/CartProvider';
 import { PizzaSize } from '@/types';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const sizes: PizzaSize[] = ['S', 'M', 'L', 'XL'];
 
@@ -36,6 +37,30 @@ const ProductDetailsScreen = () => {
 
   return (
     <View style={styles.container}>
+
+      <Stack.Screen
+        options={{
+          title: 'Menu',
+          headerRight: () => (
+            <Pressable
+              onPressIn={() => router.push(`/(admin)/menu/create?id=${id}`)}
+              style={{ padding: 10 }}
+            >
+              <FontAwesome
+                name="pencil"
+                size={25}
+                color={Colors.light.tint}
+                style={{
+                  // marginRight: 10,
+                  // marginBottom: -5,
+                  // width: 35,
+                  // height: 35,
+                }}
+              />
+            </Pressable>
+          )
+        }} />
+
       <Stack.Screen options={{ title: product.name }} />
       <Image
         source={{ uri: product.image || defaultPizzaImage }}
