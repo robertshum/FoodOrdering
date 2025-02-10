@@ -4,11 +4,19 @@ import ProductListItem from '@/components/ProductListItem';
 
 // temp data
 import products from '@assets/data/products';
+import Button from '@/components/Button';
+import { useRouter } from 'expo-router';
 
 export default function MenuScreen() {
 
+  const router = useRouter();
+
   return (
     <View>
+      <Button
+        onPress={() => router.dismissAll()}
+        text="Back [temp]"
+      />
       <FlatList
         data={products}
         renderItem={({ item }) => <ProductListItem product={item}></ProductListItem>}

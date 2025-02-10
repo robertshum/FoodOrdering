@@ -1,14 +1,22 @@
 import { FlatList } from 'react-native';
 import { View } from '@/components/Themed';
 import ProductListItem from '@/components/ProductListItem';
+import Button from '@/components/Button';
+import { useRouter } from 'expo-router';
 
 // temp data
 import products from '@assets/data/products';
 
 export default function MenuScreen() {
 
+  const router = useRouter();
+  
   return (
     <View>
+      <Button
+        onPress={() => router.dismissAll()}
+        text="Back [temp]"
+      />
       <FlatList
         data={products}
         renderItem={({ item }) => <ProductListItem product={item}></ProductListItem>}
