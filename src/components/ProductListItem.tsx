@@ -13,8 +13,9 @@ type ProductListItemProps = {
 };
 
 const ProductListItem = ({ product }: ProductListItemProps) => {
+
   return (
-    <Link href={`/menu/${product.id}`} asChild>
+    <Link href={`./menu/${product.id}`} asChild>
       {/* Pressables very similar to view, but it has press events.  Can combine it in conjunction with <Link> tag as parent with (asChild) */}
       <Pressable style={styles.container}>
         <Image
