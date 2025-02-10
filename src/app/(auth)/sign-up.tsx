@@ -47,7 +47,7 @@ const SignUpPage = () => {
       </TextInput>
 
       <Button onPress={onSignUp} text='Create account' />
-      <Text onPress={() => router.replace('/(auth)/sign-in')} style={[styles.signinLabel, { color: textColor }]}>Sign in</Text>
+      <Text onPress={() => router.replace('/sign-in')} style={[styles.signinLabel, { color: textColor }]}>Sign in</Text>
     </View>
   );
 };
