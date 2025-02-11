@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+
+// temp data
 import products from '@assets/data/products';
 import { defaultPizzaImage } from '@/components/ProductListItem';
 import { useState } from 'react';
