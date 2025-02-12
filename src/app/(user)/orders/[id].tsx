@@ -1,7 +1,9 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
+import OrderItemListItem from '@/components/OrderItemListItem';
 import OrderListItem from '@/components/OrderListItem';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { Order, OrderItem, OrderStatus } from '@/types';
+import { Order, OrderItem } from '@/types';
+
 // temp data
 import orders from '@assets/data/orders';
 
@@ -15,11 +17,16 @@ const OrderDetailsScreen = () => {
   // find the order details
   const order: Order = orders.find((o) => o.id.toString() === id) || defaultOrder;
 
+  const listOfOrders: OrderItem[] | undefined = order.order_items;
+
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: `Order #${order.id.toString()}` }} />
       <OrderListItem order={order}></OrderListItem>
-      <Text style={{ color: 'red' }}>Order Detail Screen for: {id}</Text>
+      {listOfOrders &&
+        <FlatList
+          data={listOfOrders}
+          renderItem={({ item }) => <OrderItemListItem order={item}></OrderItemListItem>} />}
     </View>
   );
 };
