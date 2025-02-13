@@ -18,14 +18,24 @@ const OrderItemListItem = ({ order }: OrderItemListItemProps) => {
   const product: Product = order.products;
 
   return (
-    <View style={[styles.container,{backgroundColor:bgColor}]}>
+    <View style={[styles.container, { backgroundColor: bgColor }]}>
       <Image
         source={{ uri: defaultPizzaImage }}
         style={styles.image} />
-      <Text style={[styles.name, { color: textColor }]}>{product.name}</Text>
-      <Text style={[styles.cost, { color: textColor }]}>{order.quantity * product.price}</Text>
-      <Text style={[styles.size, { color: textColor }]}>{order.size}</Text>
-      <Text style={[styles.quantity, { color: textColor }]}>{order.quantity}</Text>
+      <View style={styles.midContainer}>
+        <Text style={[styles.name, { color: textColor }]}>{product.name}</Text>
+        <View style={styles.priceSizeContainer}>
+          <Text style={styles.cost}>${order.quantity * product.price}</Text>
+          <Text style={[styles.size, { color: textColor }]}>Size: {order.size}</Text>
+        </View>
+
+      </View>
+
+
+      <View style={styles.quantContainer}>
+        <Text style={[styles.quantity, { color: textColor }]}>{order.quantity}</Text>
+      </View>
+
     </View>
   );
 };
@@ -42,20 +52,37 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     marginHorizontal: 5,
   },
+  midContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
+  quantContainer: {
+    marginLeft: 'auto',
+    alignSelf: 'center',
+    marginHorizontal: 5,
+
+  },
+  priceSizeContainer: {
+    flexDirection: 'row',
+    gap: 5
+  },
   image: {
     width: '25%',
     aspectRatio: 1,
   },
   name: {
-
+    fontWeight: 'bold',
+    fontSize: 15,
   },
   cost: {
-
+    color: '#0076ff',
+    fontWeight: '600',
   },
   size: {
 
   },
   quantity: {
-
+    fontWeight: 'bold',
+    fontSize: 18
   },
 });
