@@ -1,8 +1,8 @@
 import { StyleSheet, View, Pressable } from 'react-native';
 import { Text } from '@/components/Themed';
 import Colors from '@/constants/Colors';
-import { Order } from '../types';
-import { Link } from 'expo-router';
+import { Order, } from '../types';
+import { Link, useSegments } from 'expo-router';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -15,7 +15,13 @@ type OrderListItemProps = {
 };
 
 const OrderListItem = ({ order }: OrderListItemProps) => {
-  const colorScheme = useColorScheme();
+
+  const segments = useSegments();
+  type ValidRoute = "(user)" | "(admin)";
+
+  let seg = segments[0] as ValidRoute;
+
+  // const colorScheme = useColorScheme();
   // const bgColor = Colors[colorScheme ?? 'light'].background;
   const bgColor = '#263744';
   // const textColor = Colors[colorScheme ?? 'light'].text;
@@ -25,7 +31,10 @@ const OrderListItem = ({ order }: OrderListItemProps) => {
     <View style={[styles.container, {
       backgroundColor: bgColor
     }]}>
-      <Link href={`./orders/${order.id}`} asChild>
+      {/* <Link href={`/${segments[0]}/orders/${orderId}`} asChild>  */}
+      <Link href={`/${seg}/orders/${order.id}`} asChild>
+
+        {/* <Link href={{ pathname: "/[segment]/orders/[orderId]", params: { orderId: order.id, segment: segments[0] } }} asChild/> */}
         <Pressable style={styles.orderContainer}>
           <View style={styles.orderIdAndTimeContainer}>
             <Text style={styles.title}>{`Order #${order.id}`}</Text>
@@ -34,7 +43,7 @@ const OrderListItem = ({ order }: OrderListItemProps) => {
           <Text style={styles.status}>{order.status}</Text>
         </Pressable>
       </Link>
-    </View>
+    </View >
   );
 };
 
