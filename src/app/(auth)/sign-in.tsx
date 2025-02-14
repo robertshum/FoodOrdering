@@ -1,9 +1,10 @@
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 import { useState } from 'react';
 import Button from '@/components/Button';
+import { supabase } from '@/lib/supabase';
 
 const SignInPage = () => {
 
@@ -15,8 +16,18 @@ const SignInPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const onSignIn = () => {
-    console.log('sign in pressed.');
+  const [loading, setLoading] = useState(false);
+
+  const signInWithEmail = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email, password
+    });
+
+    if (error) {
+      Alert.alert(error.message);
+    }
+    setLoading(false);
   };
 
   return (
@@ -45,7 +56,11 @@ const SignInPage = () => {
       >
       </TextInput>
 
-      <Button onPress={onSignIn} text='Sign in' />
+      <Button
+        onPress={signInWithEmail}
+        disabled={loading}
+        text={loading ? 'Signing in...' : 'Sign in'}
+      />
       <Text onPress={() => router.replace('/sign-up')} style={[styles.createLabel, { color: textColor }]}>Create an account</Text>
     </View>
   );
