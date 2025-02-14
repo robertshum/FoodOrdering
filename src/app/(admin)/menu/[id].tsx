@@ -32,7 +32,7 @@ const ProductDetailsScreen = () => {
   };
 
   if (!product) {
-    return <Text>Pizza Not Found!</Text>;
+    return <Text>Pizza Not Found!</Text>
   }
 
   return (

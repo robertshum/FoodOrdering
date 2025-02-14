@@ -18,7 +18,7 @@ const OrderDetailsScreen = () => {
   const order = orders.find((o) => o.id.toString() === id);
 
   if (!order) {
-    return <Text>Order not found!</Text>;
+    return <Text>Order not found!</Text>
   }
 
   const listOfOrders: OrderItem[] | undefined = order.order_items;
@@ -27,10 +27,10 @@ const OrderDetailsScreen = () => {
     <View style={styles.container}>
       <Stack.Screen options={{ title: `Order #${order.id.toString()}` }} />
       <OrderListItem order={order}></OrderListItem>
-      {listOfOrders &&
+      {listOfOrders ?
         <FlatList
           data={listOfOrders}
-          renderItem={({ item }) => <OrderItemListItem order={item}></OrderItemListItem>} />}
+          renderItem={({ item }) => <OrderItemListItem order={item}></OrderItemListItem>} /> : null}
     </View>
   );
 };
