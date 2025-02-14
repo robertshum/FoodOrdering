@@ -5,6 +5,8 @@ export default function AuthLayout() {
 
   const { session } = useAuth();
 
+
+  // use router to redirect to home 
   if (session) {
     return <Redirect href={'/'} />;
   }

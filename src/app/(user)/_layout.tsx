@@ -14,14 +14,14 @@ function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
 }) {
-  return <FontAwesome size={20} style={{ marginBottom: -3 }} {...props} />
+  return <FontAwesome size={20} style={{ marginBottom: -3 }} {...props} />;
 }
 
 export default function TabLayout() {
 
   const { session } = useAuth();
 
-  if (session) {
+  if (!session) {
     return <Redirect href={'/'} />;
   }
 
