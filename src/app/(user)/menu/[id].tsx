@@ -1,28 +1,29 @@
 // [id] is a dynamic link, feeds in an id
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable, ActivityIndicator } from 'react-native';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-
-// temp data
-import products from '@assets/data/products';
 import { defaultPizzaImage } from '@/components/ProductListItem';
 import { useState } from 'react';
 import Button from '@components/Button';
 import { useCart } from '@/providers/CartProvider';
 import { PizzaSize } from '@/types';
+import { useProduct } from '@/api/products';
 
 const sizes: PizzaSize[] = ['S', 'M', 'L', 'XL'];
 
 const ProductDetailsScreen = () => {
   const [selectedSize, setSelectedSize] = useState<PizzaSize>('M');
+
+  // idString could be a string | string[]
   const { id } = useLocalSearchParams();
   const colorScheme = useColorScheme();
   const bgColor = Colors[colorScheme ?? 'light'].background;
   const textColor = Colors[colorScheme ?? 'light'].text;
-  const product = products.find((p) => p.id.toString() === id);
   const { addItem } = useCart();
   const router = useRouter();
+
+  const { data: product, error, isLoading } = useProduct(id);
 
   const addToCart = () => {
     if (!product) {
@@ -31,6 +32,14 @@ const ProductDetailsScreen = () => {
     addItem(product, selectedSize);
     router.push('/cart');
   };
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
+  if (error) {
+    return <Text>Failed to fetch product id of: {id}.</Text>;
+  }
 
   if (!product) {
     return <Text>Pizza Not Found!</Text>;

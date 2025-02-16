@@ -1,15 +1,24 @@
-import { FlatList } from 'react-native';
+import { ActivityIndicator, FlatList, Text } from 'react-native';
 import { View } from '@/components/Themed';
 import ProductListItem from '@/components/ProductListItem';
 import Button from '@/components/Button';
 import { useRouter } from 'expo-router';
-
-// temp data
-import products from '@assets/data/products';
+import { useProductList } from '@/api/products';
 
 export default function MenuScreen() {
 
+  const { data: products, error, isLoading } = useProductList();
+
+  // TODO remove eventually
   const router = useRouter();
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
+  if (error) {
+    return <Text>Failed to fetch products.</Text>;
+  }
   
   return (
     <View>
