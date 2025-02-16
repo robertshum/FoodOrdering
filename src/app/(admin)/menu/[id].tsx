@@ -23,6 +23,7 @@ const ProductDetailsScreen = () => {
 
   const { data: product, error, isLoading } = useProduct(id);
   
+  // TODO cleanup on aisle 5
   const addToCart = () => {
     if (!product) {
       return;

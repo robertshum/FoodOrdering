@@ -1,16 +1,11 @@
 import { ActivityIndicator, FlatList, Text } from 'react-native';
 import { View } from '@/components/Themed';
 import ProductListItem from '@/components/ProductListItem';
-import Button from '@/components/Button';
-import { useRouter } from 'expo-router';
 import { useProductList } from '@/api/products';
 
 export default function MenuScreen() {
 
   const { data: products, error, isLoading } = useProductList();
-
-  // TODO remove eventually
-  const router = useRouter();
 
   if (isLoading) {
     return <ActivityIndicator />;
@@ -22,10 +17,6 @@ export default function MenuScreen() {
   
   return (
     <View>
-      <Button
-        onPress={() => router.dismissAll()}
-        text="Back [temp]"
-      />
       <FlatList
         data={products}
         renderItem={({ item }) => <ProductListItem product={item}></ProductListItem>}
