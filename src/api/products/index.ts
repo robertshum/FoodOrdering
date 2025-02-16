@@ -15,7 +15,8 @@ export const useProductList = () => {
 };
 
 export const useProduct = (idString: string | string[]) => {
-  const id = parseFloat(typeof idString === 'string' ? idString : idString[0]);
+  const id =
+    parseFloat(typeof idString === 'string' ? idString : idString?.[0]);
   return useQuery({
     queryKey: ['products', id],
     queryFn: async () => {
@@ -90,6 +91,25 @@ export const useUpdateProduct = () => {
 
     onError(error) {
       console.log("error updating: ", error);
+    }
+  });
+};
+
+export const useDeleteProduct = () => {
+
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    async mutationFn(idString: string | string[]) {
+      const id =
+        parseFloat(typeof idString === 'string' ? idString : idString?.[0]);
+      const { error } = await supabase.from('products').delete().eq('id', id);
+      if (error) {
+        throw new Error(error.message);
+      }
+    },
+    async onSuccess() {
+      await queryClient.invalidateQueries({ queryKey: ['products'] });
     }
   });
 };
