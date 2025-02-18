@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/providers/AuthProvider";
-import { InsertTables } from "@/types";
+import { InsertTables, UpdateTables } from "@/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useAdminOrderList = ({ archived = false }) => {
@@ -97,6 +97,42 @@ export const useInsertOrder = () => {
 
     onError(error) {
       console.log("error creating an order: ", error);
+    }
+  });
+};
+
+// god this mutation looks ugly as sin
+export const useUpdateOrder = () => {
+
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    async mutationFn(
+      { idString, newFields }: { idString: string | string[], newFields: UpdateTables<'orders'>; }
+    ) {
+      const id =
+        parseFloat(typeof idString === 'string' ? idString : idString?.[0]);
+      const { error, data: updatedOrder } = await supabase
+        .from('orders')
+        .update(newFields)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      return updatedOrder;
+    },
+
+    async onSuccess(_, { idString }) {
+      await queryClient.invalidateQueries({ queryKey: ['orders'] });
+      await queryClient.invalidateQueries({ queryKey: ['orders', idString] });
+    },
+
+    onError(error) {
+      console.log("error updating: ", error);
     }
   });
 };
