@@ -3,6 +3,7 @@ import { PropsWithChildren, createContext, useContext, useState } from "react";
 import { randomUUID } from 'expo-crypto';
 import { useInsertOrder } from '@/api/orders';
 import { useRouter } from 'expo-router';
+import { useInsertOrderItems } from '@/api/order-items';
 
 type Product = Tables<'products'>;
 
@@ -25,6 +26,7 @@ export const CartContext = createContext<CartType>({
 const CartProvider = ({ children }: PropsWithChildren) => {
 
   const { mutate: inserOrder } = useInsertOrder();
+  const { mutate: insertOrderItems } = useInsertOrderItems();
   const router = useRouter();
 
   // context states
@@ -77,9 +79,24 @@ const CartProvider = ({ children }: PropsWithChildren) => {
   const checkout = () => {
     console.warn('checkout');
     inserOrder({ total }, {
-      onSuccess: (data) => {
+      onSuccess: saveOrderItems,
+    });
+  };
+
+  const saveOrderItems = (order: Tables<'orders'>) => {
+
+    // need to add quantity, size, product ID.
+    const orderItems = items.map((item) => ({
+      order_id: order.id,
+      product_id: item.product_id,
+      quantity: item.quantity,
+      size: item.size,
+    }));
+    
+    insertOrderItems(orderItems, {
+      onSuccess: () => {
         clearCart();
-        router.push(`/(user)/orders/${data.id}`);
+        router.push(`/(user)/orders/${order.id}`);
       }
     });
   };

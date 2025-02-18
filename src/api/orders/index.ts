@@ -12,7 +12,8 @@ export const useAdminOrderList = ({ archived = false }) => {
       const { data, error } = await supabase
         .from('orders')
         .select('*')
-        .in('status', statuses);
+        .in('status', statuses)
+        .order('created_at', { ascending: false });
       if (error) {
         throw new Error(error.message);
       }
@@ -26,8 +27,6 @@ export const useMyOrderList = () => {
   const { session } = useAuth();
   const id = session?.user.id;
 
-
-
   return useQuery({
     queryKey: ['orders', { userId: id }],
     queryFn: async () => {
@@ -39,7 +38,8 @@ export const useMyOrderList = () => {
       const { data, error } = await supabase
         .from('orders')
         .select('*')
-        .eq('user_id', id);
+        .eq('user_id', id)
+        .order('created_at', { ascending: false });
       if (error) {
         throw new Error(error.message);
       }
@@ -57,7 +57,8 @@ export const useOrderDetails = (idString: string | string[]) => {
       const { data, error } =
         await supabase
           .from('orders')
-          .select('*')
+          // .select('*')
+          .select('*, order_items(*, products(*))')
           .eq('id', id)
           .single();
       if (error) {
@@ -91,11 +92,11 @@ export const useInsertOrder = () => {
     },
 
     async onSuccess() {
-      await queryClient.invalidateQueries({ queryKey: ['products'] });
+      await queryClient.invalidateQueries({ queryKey: ['orders'] });
     },
 
     onError(error) {
-      console.log("error creating: ", error);
+      console.log("error creating an order: ", error);
     }
   });
 };

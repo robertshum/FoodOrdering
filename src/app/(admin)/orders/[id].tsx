@@ -5,9 +5,6 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { OrderItem, OrderStatusList } from '@/types';
 import Colors from "@/constants/Colors";
 
-// temp data
-import orders from '@assets/data/orders';
-
 import { useOrderDetails } from "@/api/orders";
 
 const OrderDetailsScreen = () => {
@@ -18,7 +15,7 @@ const OrderDetailsScreen = () => {
   const { data: order, isLoading, error } = useOrderDetails(id);
 
 
-  const listOfOrders = null;
+  // const listOfOrders = null;
 
   if (isLoading) {
     return <ActivityIndicator></ActivityIndicator>;
@@ -26,10 +23,6 @@ const OrderDetailsScreen = () => {
 
   if (error) {
     return <Text>Failed to fetch</Text>;
-  }
-
-  if (!order) {
-    return <Text>Order not found!</Text>;
   }
 
   if (!order) {
@@ -42,7 +35,7 @@ const OrderDetailsScreen = () => {
 
 
         <FlatList
-          data={listOfOrders}
+          data={order.order_items}
           renderItem={({ item }) => <OrderItemListItem order={item}></OrderItemListItem>}
           contentContainerStyle={{ gap: 10 }}
           ListHeaderComponent={() => <OrderListItem order={order}></OrderListItem>}

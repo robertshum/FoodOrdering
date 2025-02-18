@@ -2,10 +2,6 @@ import { View, Text, StyleSheet, FlatList, ActivityIndicator } from "react-nativ
 import OrderItemListItem from '@/components/OrderItemListItem';
 import OrderListItem from '@/components/OrderListItem';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { OrderItem } from '@/types';
-
-// temp data
-import orders from '@assets/data/orders';
 import { useOrderDetails } from "@/api/orders";
 
 const OrderDetailsScreen = () => {
@@ -33,7 +29,7 @@ const OrderDetailsScreen = () => {
       <OrderListItem order={order}></OrderListItem>
 
       <FlatList
-        data={null}
+        data={order.order_items}
         renderItem={({ item }) => <OrderItemListItem order={item}></OrderItemListItem>} />
     </View>
   );

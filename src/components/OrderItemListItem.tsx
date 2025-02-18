@@ -1,11 +1,12 @@
 import { StyleSheet, View, Text, Image } from 'react-native';
-import { OrderItem, Product } from '../types';
+import { OrderItem, Product, Tables } from '../types';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { defaultPizzaImage } from '@/components/ProductListItem';
 
 type OrderItemListItemProps = {
-  order: OrderItem;
+  // when you want to use nested fields in TS, join with &
+  order: Tables<'order_items'> & { products: Tables<'products'>; };
 };
 
 const OrderItemListItem = ({ order }: OrderItemListItemProps) => {
@@ -15,6 +16,7 @@ const OrderItemListItem = ({ order }: OrderItemListItemProps) => {
   const bgColor = '#263744';
   const textColor = Colors[colorScheme ?? 'light'].text;
 
+  // products is a container of product related fields, a bit of bad naming
   const product: Product = order.products;
 
   return (
