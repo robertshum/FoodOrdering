@@ -3,6 +3,7 @@ import { Text } from '@/components/Themed';
 import Colors from '@/constants/Colors';
 import { Tables } from '../types';
 import { Link } from 'expo-router';
+import RemoteImage from './RemoteImage';
 
 export const defaultPizzaImage = 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
 
@@ -16,9 +17,10 @@ const ProductListItem = ({ product }: ProductListItemProps) => {
     <Link href={`./menu/${product.id}`} asChild>
       {/* Pressables very similar to view, but it has press events.  Can combine it in conjunction with <Link> tag as parent with (asChild) */}
       <Pressable style={styles.container}>
-        <Image
+        <RemoteImage
           style={styles.image}
-          source={{ uri: product.image || defaultPizzaImage }}
+          path={product.image}
+          fallback={defaultPizzaImage}
           resizeMode='contain'
         />
         <Text style={styles.title}>{product.name}</Text>

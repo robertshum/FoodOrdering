@@ -7,6 +7,10 @@ import { defaultPizzaImage } from '@/components/ProductListItem';
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useDeleteProduct, useInsertProduct, useProduct, useUpdateProduct } from '@/api/products';
+import { randomUUID } from 'expo-crypto';
+import { supabase } from '@/lib/supabase';
+import { decode } from 'base64-arraybuffer';
+import * as FileSystem from 'expo-file-system';
 
 const CreateProductScreen = () => {
 
@@ -34,6 +38,34 @@ const CreateProductScreen = () => {
       setImage(updatingProduct.image);
     }
   }, [updatingProduct]);
+
+  const uploadImage = async () => {
+    if (!image?.startsWith('file://')) {
+      return;
+    }
+
+    const base64 = await FileSystem.readAsStringAsync(image, {
+      encoding: 'base64',
+    });
+
+    const filePath = `${randomUUID()}.png`;
+    const contentType = 'image/png';
+
+    console.log('saving pic...');
+
+    const { data, error } = await supabase.storage
+      .from('product-images')
+      .upload(filePath, decode(base64), { contentType });
+
+    if (data) {
+      return data.path;
+    }
+
+    if (error) {
+      Alert.alert(error.message);
+      return;
+    }
+  };
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -107,11 +139,13 @@ const CreateProductScreen = () => {
     });
   };
 
-  const onCreate = () => {
+  const onCreate = async () => {
 
     if (!validateInput()) {
       return;
     }
+    console.log('processing image');
+    const imagePath = await uploadImage();
 
     console.log('Created: ', name, " ", price);
 
@@ -119,7 +153,7 @@ const CreateProductScreen = () => {
     const newProduct = {
       name,
       price: parseFloat(price),
-      image
+      image: imagePath,
     };
 
     insertProduct(newProduct, {
