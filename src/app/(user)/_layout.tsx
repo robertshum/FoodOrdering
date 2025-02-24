@@ -1,13 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Redirect, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
-import * as SystemUI from "expo-system-ui";
+import { Redirect, Tabs } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { useAuth } from '@/providers/AuthProvider';
-
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -20,18 +17,24 @@ function TabBarIcon(props: {
 export default function TabLayout() {
 
   const { session } = useAuth();
+  const [redirected, setRedirected] = useState(false);
 
-  if (!session) {
-    return <Redirect href={'/'} />;
+  // Ensure redirection happens before any hooks to prevent rendering fewer hooks.  ChatGPT says that <redirect> is the culprit causing the loop but I'm not 100% sure...
+  // added the redirected state to make sure it doesn't render again.
+  // doesn't happen in other components like the root index.tsx file in app/.
+  if (session === null && !redirected) {
+    console.log('user_layout redirect!');
+    setRedirected(true);  // Set the redirected flag
+    return <Redirect href="/" />;
   }
 
   const colorScheme = useColorScheme();
   const backgroundColor = Colors[colorScheme ?? 'light'].background;
 
   // Set system background color
-  useEffect(() => {
-    SystemUI.setBackgroundColorAsync(backgroundColor);
-  }, [backgroundColor]);
+  // useEffect(() => {
+  //   SystemUI.setBackgroundColorAsync(backgroundColor);
+  // }, [backgroundColor]);
 
   return (
     <Tabs
@@ -59,6 +62,13 @@ export default function TabLayout() {
           title: 'Orders',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
     </Tabs>

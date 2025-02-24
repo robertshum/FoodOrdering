@@ -51,8 +51,6 @@ const CreateProductScreen = () => {
     const filePath = `${randomUUID()}.png`;
     const contentType = 'image/png';
 
-    console.log('saving pic...');
-
     const { data, error } = await supabase.storage
       .from('product-images')
       .upload(filePath, decode(base64), { contentType });
@@ -118,17 +116,19 @@ const CreateProductScreen = () => {
     onCreate();
   };
 
-  const onUpdate = () => {
+  const onUpdate = async () => {
     if (!validateInput()) {
       return;
     }
+
+    const imagePath = await uploadImage();
 
     //Update in DB
     const updatedProduct = {
       id,
       name,
       price: parseFloat(price),
-      image,
+      image: imagePath,
     };
 
     updateProduct(updatedProduct, {
@@ -144,10 +144,8 @@ const CreateProductScreen = () => {
     if (!validateInput()) {
       return;
     }
-    console.log('processing image');
-    const imagePath = await uploadImage();
 
-    console.log('Created: ', name, " ", price);
+    const imagePath = await uploadImage();
 
     //Save in DB
     const newProduct = {

@@ -28,9 +28,9 @@ export default function TabLayout() {
   }
 
   // Set system background color
-  useEffect(() => {
-    SystemUI.setBackgroundColorAsync(backgroundColor);
-  }, [backgroundColor]);
+  // useEffect(() => {
+  //   SystemUI.setBackgroundColorAsync(backgroundColor);
+  // }, [backgroundColor]);
 
   return (
     <Tabs

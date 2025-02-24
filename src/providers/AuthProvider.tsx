@@ -1,18 +1,17 @@
 import { supabase } from "@/lib/supabase";
-import { Profile } from "@/types";
 import { Session } from '@supabase/supabase-js';
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
 
 type AuthData = {
   session: Session | null;
-  profile: Profile;
+  profile: any;
   sessionLoading: boolean;
   isAdmin: boolean;
 };
 
 const AuthContext = createContext<AuthData>({
   session: null,
-  profile: { id: 'undefined', group: 'USER' },
+  profile: null,
   sessionLoading: true,
   isAdmin: false,
 });
@@ -20,9 +19,8 @@ const AuthContext = createContext<AuthData>({
 export default function AuthProvider({ children }: PropsWithChildren) {
 
   const [session, setSession] = useState<Session | null>(null);
-  const [sessionLoading, setSessionLoading] = useState<boolean>(true);
-  const [profile, setProfile] =
-    useState<Profile>({ id: 'undefined', group: 'USER' });
+  const [sessionLoading, setSessionLoading] = useState(true);
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
     const fetchSession = async () => {

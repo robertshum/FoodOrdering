@@ -3,6 +3,7 @@ import { OrderItem, Product, Tables } from '../types';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { defaultPizzaImage } from '@/components/ProductListItem';
+import RemoteImage from './RemoteImage';
 
 type OrderItemListItemProps = {
   // when you want to use nested fields in TS, join with &
@@ -21,9 +22,11 @@ const OrderItemListItem = ({ order }: OrderItemListItemProps) => {
 
   return (
     <View style={[styles.container, { backgroundColor: bgColor }]}>
-      <Image
-        source={{ uri: defaultPizzaImage }}
-        style={styles.image} />
+      <RemoteImage
+        path={product.image}
+        fallback={defaultPizzaImage}
+        style={styles.image}
+        resizeMode='contain' />
       <View style={styles.midContainer}>
         <Text style={[styles.name, { color: textColor }]}>{product.name}</Text>
         <View style={styles.priceSizeContainer}>
