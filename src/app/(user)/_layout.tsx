@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Redirect, Tabs } from 'expo-router';
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { Redirect, Tabs, } from 'expo-router';
+import { useColorScheme } from 'react-native';
+import Colors from '../../constants/Colors';
 import { useAuth } from '@/providers/AuthProvider';
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
+/**
+ * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
+ */
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
@@ -15,37 +15,24 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-
-  const { session } = useAuth();
-  const [redirected, setRedirected] = useState(false);
-
-  // Ensure redirection happens before any hooks to prevent rendering fewer hooks.  ChatGPT says that <redirect> is the culprit causing the loop but I'm not 100% sure...
-  // added the redirected state to make sure it doesn't render again.
-  // doesn't happen in other components like the root index.tsx file in app/.
-  if (session === null && !redirected) {
-    console.log('user_layout redirect!');
-    setRedirected(true);  // Set the redirected flag
-    return <Redirect href="/" />;
-  }
-
   const colorScheme = useColorScheme();
-  const backgroundColor = Colors[colorScheme ?? 'light'].background;
+  const { session } = useAuth();
 
-  // Set system background color
-  // useEffect(() => {
-  //   SystemUI.setBackgroundColorAsync(backgroundColor);
-  // }, [backgroundColor]);
+
+  if (!session) {
+    console.warn('redirecting...');
+    // https://stackoverflow.com/questions/78932668/i-cant-navigate-back-to-root-on-expo-router
+    // I don't know where '/' goes.  It's not root...
+    // return <Redirect href={'/'} />;
+    return <Redirect href={'/sign-in'} />;
+  }
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
-
-      {/* hide one of the tab icon */}
+      }}
+    >
       <Tabs.Screen name="index" options={{ href: null }} />
 
       <Tabs.Screen
@@ -53,7 +40,9 @@ export default function TabLayout() {
         options={{
           title: 'Menu',
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="cutlery" color={color} />
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="cutlery" color={color} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -64,6 +53,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
         }}
       />
+
       <Tabs.Screen
         name="profile"
         options={{
