@@ -2,22 +2,37 @@ import 'react-native-url-polyfill/auto';
 import * as SecureStore from 'expo-secure-store';
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '@/database.types';
+import { Platform } from 'react-native';  // Import Platform module
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage for web
 
+// Web storage fallback (localStorage)
+const webStorage = typeof window !== 'undefined' ? window.localStorage : null;
+
+// Custom storage adapter for SecureStore (mobile), AsyncStorage (web), and localStorage (if running in browser)
 const ExpoSecureStoreAdapter = {
   getItem: (key: string) => {
-    return SecureStore.getItemAsync(key);
+    if (Platform.OS === 'web') {
+      return webStorage?.getItem(key);  // Use localStorage for web
+    }
+    return SecureStore.getItemAsync(key);  // Use SecureStore for mobile
   },
   setItem: (key: string, value: string) => {
-    SecureStore.setItemAsync(key, value);
+    if (Platform.OS === 'web') {
+      return webStorage?.setItem(key, value);  // Use localStorage for web
+    }
+    return SecureStore.setItemAsync(key, value);  // Use SecureStore for mobile
   },
   removeItem: (key: string) => {
-    SecureStore.deleteItemAsync(key);
+    if (Platform.OS === 'web') {
+      return webStorage?.removeItem(key);  // Use localStorage for web
+    }
+    return SecureStore.deleteItemAsync(key);  // Use SecureStore for mobile
   },
 };
 
-// safe to share key and url
-const supabaseUrl = 'https://ffsdqmjoinljvymgllnj.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmc2RxbWpvaW5sanZ5bWdsbG5qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk0MzgxMTcsImV4cCI6MjA1NTAxNDExN30.toRs-9yMqp5mlXkPMN98VMJeU-wMl73XUD3EhKcQfEA';
+// Safe to share key and URL
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON || '';
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
