@@ -3,20 +3,36 @@
 // This enables autocomplete, go to definition, etc.
 
 // Setup type definitions for built-in Supabase Runtime APIs
-import "jsr:@supabase/functions-js/edge-runtime.d.ts"
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { stripe } from "./_utils/stripe.ts";
 
-console.log("Hello from Functions!")
+console.log("Hello from Functions!");
 
 Deno.serve(async (req) => {
-  const { name } = await req.json()
-  const data = {
-    message: `Hello Mr. ${name}!`,
-  }
 
-  return new Response(
-    JSON.stringify(data),
-    { headers: { "Content-Type": "application/json" } },
-  )
+  try {
+
+    const { amount } = await req.json();
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      // $10.99, always an integer
+      amount: amount,
+      currency: 'usd',
+    });
+
+    const res = ({
+      paymentIntent: paymentIntent.client_secret,
+      publishableKey: Deno.env.get('EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY')
+    });
+
+    return new Response(
+      JSON.stringify(res),
+      { headers: { "Content-Type": "application/json" } },
+    );
+
+  } catch (error) {
+    return new Response(Json.stringify(error)); s;
+  }
 })
 
 /* To invoke locally:

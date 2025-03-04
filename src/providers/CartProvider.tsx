@@ -4,6 +4,7 @@ import { randomUUID } from 'expo-crypto';
 import { useInsertOrder } from '@/api/orders';
 import { useRouter } from 'expo-router';
 import { useInsertOrderItems } from '@/api/order-items';
+import { initialisePaymentSheet, openPaymentSheet } from '@/lib/stripe';
 
 type Product = Tables<'products'>;
 
@@ -25,7 +26,7 @@ export const CartContext = createContext<CartType>({
 
 const CartProvider = ({ children }: PropsWithChildren) => {
 
-  const { mutate: inserOrder } = useInsertOrder();
+  const { mutate: insertOrder } = useInsertOrder();
   const { mutate: insertOrderItems } = useInsertOrderItems();
   const router = useRouter();
 
@@ -76,9 +77,19 @@ const CartProvider = ({ children }: PropsWithChildren) => {
     setItems([]);
   };
 
-  const checkout = () => {
-    console.warn('checkout');
-    inserOrder({ total }, {
+  const checkout = async () => {
+
+    // * 100 to move pennies
+    // floor to get rid of decimal
+    await initialisePaymentSheet(Math.floor(total * 100));;
+
+    const payed = await openPaymentSheet();
+
+    if (!payed) {
+      return;
+    }
+
+    insertOrder({ total }, {
       onSuccess: saveOrderItems,
     });
   };
@@ -92,7 +103,7 @@ const CartProvider = ({ children }: PropsWithChildren) => {
       quantity: item.quantity,
       size: item.size,
     }));
-    
+
     insertOrderItems(orderItems, {
       onSuccess: () => {
         clearCart();

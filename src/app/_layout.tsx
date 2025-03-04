@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import CartProvider from '@/providers/CartProvider';
 import AuthProvider from '@/providers/AuthProvider';
-
+import { StripeProvider } from '@stripe/stripe-react-native';
 import { useColorScheme } from '@/components/useColorScheme';
 import QueryProvider from '@/providers/QueryProvider';
 
@@ -53,22 +53,25 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AuthProvider>
-        <QueryProvider>
-          <CartProvider>
-            <Stack>
-              <Stack.Screen name="(user)" options={{ headerShown: false }} />
-              <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              <Stack.Screen name="cart" options={{
-                presentation: 'modal',
-                animation: "slide_from_left",
-                animationTypeForReplace: "push",
-              }} />
-            </Stack>
-          </CartProvider>
-        </QueryProvider>
-      </AuthProvider>
+      <StripeProvider
+        publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''} >
+        <AuthProvider>
+          <QueryProvider>
+            <CartProvider>
+              <Stack>
+                <Stack.Screen name="(user)" options={{ headerShown: false }} />
+                <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                <Stack.Screen name="cart" options={{
+                  presentation: 'modal',
+                  animation: "slide_from_left",
+                  animationTypeForReplace: "push",
+                }} />
+              </Stack>
+            </CartProvider>
+          </QueryProvider>
+        </AuthProvider>
+      </StripeProvider>
     </ThemeProvider>
   );
 }
