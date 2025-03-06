@@ -6,6 +6,7 @@ import { OrderStatus, OrderStatusList } from '@/types';
 import Colors from "@/constants/Colors";
 
 import { useOrderDetails, useUpdateOrder } from "@/api/orders";
+import { notifyUserAboutOrderUpdate } from "@/lib/notifications";
 
 const OrderDetailsScreen = () => {
 
@@ -16,8 +17,13 @@ const OrderDetailsScreen = () => {
 
   const { mutate: updateOrder } = useUpdateOrder();
 
-  const updateStatus = (status: OrderStatus) => {
+  const updateStatus = async (status: OrderStatus) => {
     updateOrder({ idString: id, newFields: { status } });
+
+    if (order) {
+      await notifyUserAboutOrderUpdate({ ...order, status });
+    }
+
   };
 
   if (isLoading) {
