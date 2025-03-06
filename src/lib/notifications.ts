@@ -67,9 +67,9 @@ export async function sendPushNotification(
   });
 }
 
-const getUserToken = async (userId : string | null) => {
+const getUserToken = async (userId: string | null) => {
 
-  if(!userId) {
+  if (!userId) {
     return;
   }
 
@@ -83,10 +83,15 @@ const getUserToken = async (userId : string | null) => {
 };
 
 export const notifyUserAboutOrderUpdate = async (order: Tables<'orders'>) => {
-  const token = await getUserToken(order.user_id);
+  const token: string | null | undefined = await getUserToken(order.user_id);
 
-  // TODO test msg
+  if (!token) {
+    return;
+  }
+
+  const pushToken = token as unknown as Notifications.ExpoPushToken;
+
   const title = `Your order is ${order.status}`;
   const body = 'Food delivery msg body.';
-  sendPushNotification(token, title, body);
+  sendPushNotification(pushToken, title, body);
 };
